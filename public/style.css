@@ -64,7 +64,8 @@ body {
     grid-template-columns: repeat(10, 4.6vmin);
 }
 
-.grid-computer > .taken {
+.grid-computer > .taken,
+.grid-computer > .boom {
     background-color: hsl(200, 100%, 50%) !important;
     border-radius: 0 !important;
 }
@@ -228,18 +229,18 @@ body {
     align-items: center;
 }
 
+.player {
+    margin: 2vmin;
+}
+
 .connected, .ready {
     font-weight: normal;
+    opacity: .25;
+    text-decoration: line-through;
 }
 
-.connected span,
-.ready span {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    background-color: red;
-}
-
-span.green {
-    background: green;
+.connected.active,
+.ready.active {
+    opacity: 1;
+    text-decoration: none;
 }
