@@ -64,8 +64,33 @@ body {
     grid-template-columns: repeat(10, 4.6vmin);
 }
 
+.grid-computer > .taken {
+    background-color: hsl(200, 100%, 50%) !important;
+    border-radius: 0 !important;
+}
+
 .taken, .ship {
     background-color: hsl(0, 0%, 80%);
+}
+
+.taken.start.vertical {
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+}
+
+.taken.end.vertical {
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+}
+
+.taken.start.horizontal {
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+}
+
+.taken.end.horizontal {
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
 }
 
 .grid-display {
@@ -147,12 +172,60 @@ body {
     margin: 1rem;
 }
 
-.boom {
+.boom::after,
+.miss::after {
+    content: '';
+    position: absolute;
+    border-radius: 100%;
+    width: 2vmin;
+    height: 2vmin;
+}
+
+.miss::after {
+    background-color: white;
+}
+
+.boom::after {
     background-color: red;
 }
 
-.miss {
-    background-color: black;
+.miss::before,
+.boom::before {
+    content: '';
+    position: absolute;
+    animation: hit .5s ease-out forwards;
+    border-width: .1vmin;
+    border-style: solid;
+    border-radius: 100%;
+    width: 2vmin;
+    height: 2vmin;
+}
+
+.boom::before {
+    border-color: red;
+}
+
+.miss::before {
+    border-color: white;
+}
+
+
+@keyframes hit {
+    0% {
+        opacity: 1;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(3);
+    }
+}
+
+.miss, 
+.boom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .connected, .ready {

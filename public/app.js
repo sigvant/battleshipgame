@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rotateButton = document.querySelector('#rotate')
     const turnDisplay = document.querySelector('#whose-go')
     const infoDisplay = document.querySelector('#info')
+    const setupButtons = document.querySelector('.setup-buttons')
 
     const userSquares = []
     const computerSquares = []
@@ -104,7 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
         socket.on('enemy-ready', num => {
             enemyReady = true
             playerReady(num)
-            if (ready) playGameMulti(socket)
+            if (ready) {
+                setupButtons.style.display = 'none'
+                playGameMulti(socket)
+            } 
         })
 
         // Check player status
@@ -171,7 +175,10 @@ document.addEventListener('DOMContentLoaded', () => {
         generate(shipArray[3])
         generate(shipArray[4])
 
-        startButton.addEventListener('click', playGameSingle)
+        startButton.addEventListener('click', () => {
+            setupButtons.style.display = 'none'
+            playGameSingle()
+        })
 
     }
 
@@ -267,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let shipClass = shipNameWithLastId.slice(0, -2)
         let lastShipIndex = parseInt(shipNameWithLastId.substr(-1))
         let shipLastId = lastShipIndex + parseInt(this.dataset.id)
-        const notAllowedHorizontal = [0,10,20,30,40,50,60,70,80,90,1,11,21,31,41,51,61,71,81,91,2,22,32,42,52,62,72,82,92,3,13,23,33,43,53,63,73,83,93]
+        const notAllowedHorizontal = [0,10,20,30,40,50,60,70,80,90,1,11,21,31,41,51,61,71,81,91,2,22,32,42,52,62,72,82,92,3,13,23,33,43,53,63,73,83,93,99,98,97,96]
         const notAllowedVertical = [99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,64,63,62,61,60]
         
         let newNotAllowedHorizontal = notAllowedHorizontal.splice(0, 10 * lastShipIndex)
@@ -278,11 +285,19 @@ document.addEventListener('DOMContentLoaded', () => {
         shipLastId = shipLastId - selectedShipIndex
         if (isHorizontal && !newNotAllowedHorizontal.includes(shipLastId)) {
             for (let i = 0; i < draggedShipLength; i++) {
-                userSquares[parseInt(this.dataset.id) - selectedShipIndex + i].classList.add('taken', shipClass)
+                let directionClass
+                if (i === 0) directionClass = 'start'
+                if (i === draggedShipLength - 1) directionClass = 'end'
+                userSquares[parseInt(this.dataset.id) - selectedShipIndex + i]
+                .classList.add('taken', 'horizontal', directionClass, shipClass)
             }
         } else if (!isHorizontal && !newNotAllowedVertical.includes(shipLastId)) {
             for (let i = 0; i < draggedShipLength; i++) {
-                userSquares[parseInt(this.dataset.id) - selectedShipIndex + width*i].classList.add('taken', shipClass)
+                let directionClass
+                if (i === 0) directionClass = 'start'
+                if (i === draggedShipLength - 1) directionClass = 'end'
+                userSquares[parseInt(this.dataset.id) - selectedShipIndex + width*i]
+                .classList.add('taken', 'vertical', directionClass, shipClass)
             }
         } else return
 
@@ -339,6 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let cruiserCount = 0
     let battleshipCount = 0
     let carrierCount = 0
+
     function revealSquare(classList) {
         const enemySquare = computerGrid.querySelector(`div[data-id='${shotFired}']`)
         const obj = Object.values(classList)
@@ -369,7 +385,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function enemyGo(square) {
         if (gameMode === 'singlePlayer') square = Math.floor(Math.random() * userSquares.length)
         if (!userSquares[square].classList.contains('boom')) {
-            userSquares[square].classList.add('boom')
+            const hit =  userSquares[square].classList.contains('taken')
+            userSquares[square].classList.add(hit ? 'boom' : 'miss')
             if (userSquares[square].classList.contains('destroyer')) cpuDestroyerCount++
             if (userSquares[square].classList.contains('submarine')) cpuSubmarineCount++
             if (userSquares[square].classList.contains('cruiser')) cpuCruiserCount++
