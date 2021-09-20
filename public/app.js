@@ -279,20 +279,23 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let newNotAllowedHorizontal = notAllowedHorizontal.splice(0, 10 * lastShipIndex)
         let newNotAllowedVertical = notAllowedVertical.splice(0, 10 * lastShipIndex)
- 
+        let isTaken = userSquares[parseInt(this.dataset.id)].classList.contains('taken');
+         
         selectedShipIndex = parseInt(selectedShipNameWithIndex.substr(-1))
         // this is quite nifty
         shipLastId = shipLastId - selectedShipIndex
-        if (isHorizontal && !newNotAllowedHorizontal.includes(shipLastId)) {
+        if (isHorizontal && !newNotAllowedHorizontal.includes(shipLastId) && !isTaken) {
             for (let i = 0; i < draggedShipLength; i++) {
+                
                 let directionClass
                 if (i === 0) directionClass = 'start'
                 if (i === draggedShipLength - 1) directionClass = 'end'
                 userSquares[parseInt(this.dataset.id) - selectedShipIndex + i]
                 .classList.add('taken', 'horizontal', directionClass, shipClass)
             }
-        } else if (!isHorizontal && !newNotAllowedVertical.includes(shipLastId)) {
+        } else if (!isHorizontal && !newNotAllowedVertical.includes(shipLastId) && !isTaken) {
             for (let i = 0; i < draggedShipLength; i++) {
+                
                 let directionClass
                 if (i === 0) directionClass = 'start'
                 if (i === draggedShipLength - 1) directionClass = 'end'
